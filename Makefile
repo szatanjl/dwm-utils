@@ -2,7 +2,7 @@ package = dwm-utils
 binscripts = dwm-cmd.sh dwm-status.sh dwm-wallpaper.sh
 scripts = appsmenu.sh backlight.sh docsmenu.sh music.sh musicmenu.sh \
           quit.sh quitmenu.sh rfkill.sh screenlock.sh screenshot.sh \
-          terminal.sh touchpad.sh volume.sh
+          terminal.sh touchpad.sh volume.sh setup-screen.sh
 distfiles = Makefile $(binscripts) $(scripts) README
 
 prefix = /usr/local
@@ -51,6 +51,7 @@ install: all
 	cp -f terminal.sh $(DESTDIR)$(scriptsdir)/terminal
 	cp -f touchpad.sh $(DESTDIR)$(scriptsdir)/touchpad
 	cp -f volume.sh $(DESTDIR)$(scriptsdir)/volume
+	cp -f setup-screen.sh $(DESTDIR)$(scriptsdir)/setup-screen
 	cd $(DESTDIR)$(scriptsdir) && chmod +x $(scripts:.sh=)
 
 uninstall:
