@@ -1,3 +1,3 @@
 #!/bin/sh -eu
 
-exec termite
+exec alacritty

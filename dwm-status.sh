@@ -89,11 +89,11 @@ done &
 while true; do
 	cmd="$(cat -u -- "$pipe")"
 	status="$(printf '@F#5294e2@ %s @F@%s' \
-		'ﰵ' "$(cmd_upgrade)" \
-		'' "$(cmd_wifi)" \
+		'󰜷' "$(cmd_upgrade)" \
+		'󰖩' "$(cmd_wifi)" \
 		'' "$(cmd_battery)" \
-		'ﯧ' "$(cmd_screen)" \
+		'󰛩' "$(cmd_screen)" \
 		'' "$(cmd_volume)" \
-		'' "$(cmd_date)") "
+		'󱑎' "$(cmd_date)") "
 	xsetroot -name "$status"
 done

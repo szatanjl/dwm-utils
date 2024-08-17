@@ -5,25 +5,28 @@ if [ -z "${HOME-}" ]; then
 	exit 1
 fi
 
-dir="$HOME/img/screenshots"
+dir="$HOME/tmp/screenshots"
 bname="$dir/$(date '+%Y-%m-%d-%H-%M-%S')"
-fname="$bname.png"
+fname="$bname"
 
-while [ -e "$fname" ]; do
+while [ -e "$fname.png" ]     || [ -e "$fname.scr.png" ] ||
+      [ -e "$fname.mon.png" ] || [ -e "$fname.win.png" ]; do
 	n="$(( ${n:-0} + 1 ))"
-	fname="$bname.$n.png"
+	fname="$bname.$n"
 done
 
 mkdir -p -- "$dir"
 
 if [ "${1-}" = 'select' ]; then
-	maim -um 1 -s -lc '0.3,0.3,0,0.1' -- "$fname"
-elif [ "${1-}" = 'monitor' ] && [ -n "${2-}" ]; then
-	mon="$(xrandr --listmonitors | sed -e "/$2:/!d; s|/[0-9]*||g" \
-	           -e 's/^.*: [^ ]* \([^ ]*\).*/\1/')"
-	maim -um 1 -g "$mon" -- "$fname"
-elif [ "${1-}" = 'window' ] && [ -n "${2-}" ]; then
-	maim -um 1 -i "$2" -- "$fname"
+	maim -um 1 -s -lc '0.3,0.3,0,0.1' -- "$fname.png"
 else
-	maim -um 1 -- "$fname"
+	maim -um 1 -- "$fname.scr.png"
+	if [ -n "${1-}" ]; then
+		mon="$(xrandr --listmonitors | sed -e "/$1:/!d; s|/[0-9]*||g" \
+		           -e 's/^.*: [^ ]* \([^ ]*\).*/\1/')"
+		maim -um 1 -g "$mon" -- "$fname.mon.png"
+	fi
+	if [ -n "${2-}" ]; then
+		maim -um 1 -i "$2" -- "$fname.win.png"
+	fi
 fi
