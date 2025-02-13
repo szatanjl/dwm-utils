@@ -11,32 +11,46 @@ cmd_upgrade()
 
 cmd_wifi()
 {
+	essid="$(iwconfig 2> /dev/null | sed -n 's/.*ESSID:"\(.*\)".*/\1/p')"
 	strength="$(iwconfig 2> /dev/null |
 	            sed -n 's/.*Quality=\([0-9]*\).*/\1/p')"
-	essid="$(iwconfig 2> /dev/null | sed -n 's/.*ESSID:"\(.*\)".*/\1/p')"
-	if [ -z "$strength" ] || [ -z "$essid" ]; then
+	if [ -z "$essid" ] || [ -z "$strength" ]; then
 		printf 'Off'
 	else
-		printf '%s %3d' "$essid" "$(( 100 * strength / 70 ))"
+		strength="$(( 100 * strength / 70 ))"
+		if [ "$strength" -ge 100 ]; then
+			strength=X0
+		fi
+		printf '%s %2s' "$essid" "$strength"
 	fi
 }
 
 cmd_battery()
 {
-	printf '%3d' "$(cat /sys/class/power_supply/BAT0/capacity)"
+	capacity="$(cat /sys/class/power_supply/BAT0/capacity)"
+	if [ "$capacity" -ge 100 ]; then
+		printf 'X0 '
+		return
+	fi
+	printf '%2d' "$capacity"
 	if grep -q Charging < /sys/class/power_supply/BAT0/status; then
 		printf '+'
 	elif grep -q Discharging < /sys/class/power_supply/BAT0/status; then
 		printf '-'
+	else
+		printf ' '
 	fi
 }
 
 cmd_screen()
 {
 	brightness="$(xbacklight -get)"
+	if [ "$brightness" -ge 100 ]; then
+		brightness=X0
+	fi
 	temp="$(redshift -p 2> /dev/null |
 	        sed -n 's/.*temperature: \(.*\)/\1/p')"
-	printf '%3.0f %5s' "$brightness" "$temp"
+	printf '%2s %5s' "$brightness" "$temp"
 }
 
 cmd_volume()
@@ -55,7 +69,11 @@ cmd_volume()
 	if [ "$n" -eq 0 ]; then
 		printf 'Error'
 	else
-		printf '%3d' "$(( volume / n ))"
+		volume="$(( volume / n ))"
+		if [ "$volume" -ge 100 ]; then
+			volume=X0
+		fi
+		printf '%2s' "$volume"
 	fi
 }
 
