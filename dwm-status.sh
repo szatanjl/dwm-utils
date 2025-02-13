@@ -94,6 +94,6 @@ while true; do
 		'' "$(cmd_battery)" \
 		'󰛩' "$(cmd_screen)" \
 		'' "$(cmd_volume)" \
-		'󱑎' "$(cmd_date)") "
+		'󱑎' "$(cmd_date)")"
 	xsetroot -name "$status"
 done

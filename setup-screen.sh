@@ -16,8 +16,10 @@ ratio() {
 			echo '16x10'
 		elif [ "$r" -lt 370 ]; then
 			echo '16x9'
-		else
+		elif [ "$r" -lt 530 ]; then
 			echo '21x9'
+		else
+			echo '32x9'
 		fi
 	}
 }
@@ -27,31 +29,15 @@ alt="${2-}"
 
 # Setup monitors
 case "$mon-$alt" in
-	1-)
+	1-|1-alt)
 		xrandr --output eDP-1 --primary --auto \
 		       --output DP-1 --off \
 		       --output DP-2 --off \
 		       --output HDMI-1 --off \
-		       --output HDMI-2 --off
-		primary='eDP-1'
-		;;
-	1-alt)
-		xrandr --output eDP-1 --primary --auto \
-		       --output DP-1 --off \
-		       --output DP-2 --off \
-		       --output HDMI-1 --same-as eDP-1 \
 		       --output HDMI-2 --off
 		primary='eDP-1'
 		;;
 	2-|2-alt)
-		xrandr --output eDP-1 --off \
-		       --output DP-1 --primary --auto \
-		       --output DP-2 --off \
-		       --output HDMI-1 --off \
-		       --output HDMI-2 --off
-		primary='DP-1'
-		;;
-	3-|3-alt)
 		xrandr --output eDP-1 --off \
 		       --output DP-1 --off \
 		       --output DP-2 --off \
@@ -59,14 +45,21 @@ case "$mon-$alt" in
 		       --output HDMI-2 --off
 		primary='HDMI-1'
 		;;
+	3-|3-alt)
+		xrandr --output eDP-1 --primary --auto \
+		       --output DP-1 --off \
+		       --output DP-2 --off \
+		       --output HDMI-1 --same-as eDP-1 \
+		       --output HDMI-2 --off
+		primary='eDP-1'
+		;;
 	4-|4-alt)
 		xrandr --output eDP-1 --off \
-		       --output DP-1 --primary --auto \
+		       --output DP-1 --primary --mode 5120x1440 --rate 75 \
 		       --output DP-2 --off \
-		       --output HDMI-1 --right-of DP-1 --auto \
+		       --output HDMI-1 --off \
 		       --output HDMI-2 --off
 		primary='DP-1'
-		secondary='HDMI-1'
 		;;
 	*)
 		echo "setup-screen: incorrect arguments: $*" >&2
@@ -75,7 +68,7 @@ case "$mon-$alt" in
 esac
 
 # Remove monitor split
-xrandr --delmonitor MON-a --delmonitor MON-b
+xrandr --delmonitor MON-a --delmonitor MON-b --delmonitor MON-c
 
 # Setup wallpaper
 if [ -z "${XDG_DATA_HOME-}" ] && [ -z "${HOME-}" ]; then
@@ -90,7 +83,15 @@ else
 fi
 
 # Split monitor
-if [ -z "$alt" ] && [ "$mon" != 1 ]; then
-	xrandr --setmonitor MON-a "2064/480x1440/330+0+0" "$primary" \
-	       --setmonitor MON-b "1376/320x1440/330+2064+0" none
-fi
+case "$mon-$alt" in
+	4-)
+		xrandr --setmonitor MON-a "1920/446x1440/340+0+0" "$primary" \
+		       --setmonitor MON-b "1920/446x1440/340+1920+0" none \
+		       --setmonitor MON-c "1280/298x1440/340+3840+0" none
+		;;
+	4-alt)
+		xrandr --setmonitor MON-a "1280/298x1440/340+0+0" "$primary" \
+		       --setmonitor MON-b "2560/595x1440/340+1280+0" none \
+		       --setmonitor MON-c "1280/298x1440/340+3840+0" none
+		;;
+esac
