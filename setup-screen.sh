@@ -86,12 +86,12 @@ fi
 case "$mon-$alt" in
 	4-)
 		xrandr --setmonitor MON-a "1920/446x1440/340+0+0" "$primary" \
-		       --setmonitor MON-b "1920/446x1440/340+1920+0" none \
-		       --setmonitor MON-c "1280/298x1440/340+3840+0" none
+		       --setmonitor MON-b "1920/446x1440/340+1920+0" "$primary" \
+		       --setmonitor MON-c "1280/298x1440/340+3840+0" "$primary"
 		;;
 	4-alt)
 		xrandr --setmonitor MON-a "1280/298x1440/340+0+0" "$primary" \
-		       --setmonitor MON-b "2560/595x1440/340+1280+0" none \
-		       --setmonitor MON-c "1280/298x1440/340+3840+0" none
+		       --setmonitor MON-b "2560/595x1440/340+1280+0" "$primary" \
+		       --setmonitor MON-c "1280/298x1440/340+3840+0" "$primary"
 		;;
 esac
